@@ -26,6 +26,8 @@ namespace Systems
         }
 
         protected override void OnUpdate () {
+            if (!AutoPlay.GalacticConquestStarted) return;
+            
             if (Input.GetMouseButtonDown(0))
             {
                 var planet = GetPlanetUnderMouse();

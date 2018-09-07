@@ -10,6 +10,8 @@ namespace Other
     /// </summary>
     public class AutoPlay : MonoBehaviour
     {
+        public static bool GalacticConquestStarted { get; private set; }
+        
         [SerializeField]
         float attackInterval = 0.1f;
         [SerializeField]
@@ -23,6 +25,8 @@ namespace Other
             planets = GameObject.FindGameObjectsWithTag("Planet");
             entityManager = World.Active.GetOrCreateManager<EntityManager>();
             var sceneSwitcher = GameObject.Find("SceneSwitcher");
+
+            GalacticConquestStarted = true;
 
             // We mostly only want to run the automation when we are running through the scene switcher.
             // Can also be enabled by toggling the AutoPlay script in the Spawners object in the scene
