@@ -19,8 +19,6 @@ transform.position += deltaTime * playerInput.move * settings.playerMoveSpeed;
 group.transform[index] = transform; // Write
 ```
 
-> Note: ECS will soon use a C#7 based compiler, using [ref returns](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/ref-returns) it makes the extra assignment unnecessary.
-
 IComponentData structs may not contain references to managed objects. Since the all component data lives in simple non-garbage-collected tracked [chunk memory](https://en.wikipedia.org/wiki/Chunking_(computing)).
 
 ## EntityArchetype
@@ -456,6 +454,10 @@ CommandBuffer.SetComponent(spawn);
 ```
 
 When the barrier system updates, it will automatically play back the command buffers. It's worth noting that the barrier system will take a dependency on any jobs spawned by systems that access it (so that it can now that the command buffers have been filled in fully). If you see bubbles in the frame, it may make sense to try moving the barrier later in the frame, if your game logic allows for this.
+
+### Using command buffers from parallel for-style jobs
+
+To record entity command buffers from parallel for jobs, you must use the `EntityCommandBuffer.Concurrent` type.
 
 ## GameObjectEntity
 

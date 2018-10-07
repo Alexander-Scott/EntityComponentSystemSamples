@@ -1,3 +1,72 @@
+# 0.0.16
+## New Features
+* Added virtual `ValidateSerializedData()` method to `ComponentDataWrapper<T>`and `SharedComponentDataWrapper<T>`, which allows you to sanitize the wrapper's serialized data.
+
+## Upgrade guide
+
+## Changes
+* Reverted hotfix in 0.0.14 that made `ComponentDataWrapperBase.OnValidate()` public and `ComponentDataWrapper<T>.m_SerializedData` protected; both are private again.
+* CopyTransformToGameObjectSystem and CopyTransformFromGameObjectSystem now execute in edit mode.
+
+## Fixes
+* Fixed selection not working in Galactic Conquest sample.
+* Fixed errors in HierarchyBrokenExample, HierarchyExample, and RotationExample.
+* Fixed regression introduced in 0.0.14 that caused typing values for a RotationComponent in the Inspector to re-normalize with every (xyzw) component entry.
+* Fixed all warnings in samples and packages.
+
+# 0.0.15
+## New Features
+
+## Upgrade guide
+
+## Changes
+* By default, EntityDebugger doesn't show inactive systems (systems which have never run). You can choose to show them in the World dropdown.
+* Fixed an issue where closing the EntityDebugger's Filter window would throw an exception
+* The Unity.Entities assembly no longer references the UnityEngine.Component type directly. If you create a build that strips the Unity.Entities.Hybrid assembly, but you need to create a ComponentType instance from a UnityEngine.Component-derived type, you must first manually call `TypeManager.RegisterUnityEngineComponentType(typeof(UnityEngine.Component))` somewhere in your initialization code.
+* EntityCommandBuffer now records which system the commandbuffer was recorded in and which barrier it is played back and it includes it when an exception is thrown on playback of the command buffer.
+
+## Fixes
+* Fixed memory corruption where EntityCommandBuffer.AddComponent with zero sized components overwriting memory of other components. (This is a regression that was introduced in 0.0.13_
+
+
+# 0.0.14
+## Fixes
+* Fixed a bug which was causing some of the samples to not work correctly
+
+
+# 0.0.13
+## New Features
+* Added additional warnings to the Inspector for ComponentDataWrapper and SharedComponentDataWrapper types related to multiple instances of the same wrapper type.
+
+## Upgrade guide
+* All ComponentDataWrapper types shipped in this package are now marked with `DisallowMultipleComponent` in order to prevent unexpected behavior, since an Entity may only have a single component of a given type. If you have any GameObjects with multiples of a given ComponentDataWrapper type, you must remove the duplicates. (Due to an implentation detail in the current hybrid serialization utility, SharedComponentDataWrapper types cannot be marked as such. This issue will be addressed in a future release.)
+
+## Changes
+* ComponentDataWrapperBase now implements `protected virtual OnEnable()` and `protected virtual OnDisable()`. You must override these methods and call the base implementation if you had defined them in a subclass.
+* GameObjectEntity `OnEnable()` and `OnDisable()` are now `protected virtual`, instead of `public`.
+
+## Fixes
+* Fixed bug where component data was not immediately registered with EntityManager when adding a ComponentDataWrapper to a GameObject whose GameObjectEntity had already been enabled.
+* Fixed a bug where EntityManager.AddComponentData would throw an exception when adding a zero sized / tag component.
+* Fixed hard crash in `SerializeUtilityHybrid.SerializeSharedComponents()` when the SharedComponentDataWrapper for the SharedComponentData type was marked with `DisallowMultipleComponent`. It now throws an exception instead.
+
+# 0.0.12
+## New Features
+
+## Upgrade guide
+* OnCreateManager(int capacity) -> OnCreateManager(). All your own systems have to be changed to follow the new signature.
+
+## Changes
+* Removed capacity parameter from from ScriptBehaviourManager.OnCreateManager.
+* EntityDebugger now displays the declaring type for nested types
+* IncrementalCompiler is no longer a dependency on the entities package. If you want to continue to use it you need to manually include it from the package manager UI for your project.
+* `EntityCommandBuffer.Concurrent` playback is now deterministic. Playback order is determined by the new `jobIndex` parameter accepted by all public API methods, which must be a unique ID per job (such as the index passed to `Execute()` in an IJobParallelFor).
+
+## Fixes
+* Fixed bug where ComponentDataWrapper fields spilled out of their area in the Inspector.
+* ComponentDataWrapper for empty data types (i.e. tags) no longer displays error in Inspector if wrapped type is not serializable.
+* Fixed an issue where EntityDebugger was slow if you scrolled down past 3 million entities
+
 # 0.0.11
 ## New Features
 * Global `Disabled` component. Any component data associated with same entity referenced by `Disabled` component will be ignored by all system updates.

@@ -24,7 +24,9 @@ namespace Systems
         }
         struct SpawningPlanets
         {
+#pragma warning disable 649
             public readonly int Length;
+#pragma warning restore 649
             public ComponentDataArray<PlanetShipLaunchData> Data;
         }
 
@@ -35,7 +37,7 @@ namespace Systems
             public int ShipCount;
         }
 
-        protected override void OnCreateManager(int capacity)
+        protected override void OnCreateManager()
         {
             _shipsToSpawn = new NativeList<ShipSpawnData>(Allocator.Persistent);
         }
@@ -140,7 +142,7 @@ namespace Systems
                         var insideCircle = Random.insideUnitCircle.normalized;
                         var onSphere = new float3(insideCircle.x, 0, insideCircle.y);
                         shipPos = planetPos + (onSphere * (planetRadius + _prefabManager.ShipPrefab.transform.localScale.x));
-                    } while (math.lengthSquared(shipPos - planetPos) > planetDistance * planetDistance);
+                    } while (math.lengthsq(shipPos - planetPos) > planetDistance * planetDistance);
 
                     var data = new ShipData
                     {
@@ -148,13 +150,13 @@ namespace Systems
                         TeamOwnership = planet.TeamOwnership
                     };
                     _entityManager.AddComponentData(entities[i], data);
-                    
+
                     var spawnPosition = new Position
                     {
                         Value = shipPos
                     };
 
-                    
+
                     var spawnScale = new Scale
                     {
                         Value = new float3(1.0f, 1.0f, 1.0f)

@@ -15,7 +15,6 @@ public class CubeSpawnSystem : ComponentSystem
         CubeAttach = Bootstrap.CubeAttach;
 
         var count = Bootstrap.Settings.nbOfCubes;
-        var Radius = Bootstrap.Settings.radius; 
         float radius = 0;
         var mir = Bootstrap.Settings.getMSI();
 
@@ -26,6 +25,7 @@ public class CubeSpawnSystem : ComponentSystem
             radius = 1.3f * math.sqrt(i);
             
             var cubeEntity = EntityManager.CreateEntity(Cube);
+            EntityManager.SetComponentData(cubeEntity, new Rotation {Value = quaternion.identity});
             EntityManager.SetSharedComponentData(cubeEntity, mir);
             EntityManager.SetComponentData(cubeEntity, new Position
             {

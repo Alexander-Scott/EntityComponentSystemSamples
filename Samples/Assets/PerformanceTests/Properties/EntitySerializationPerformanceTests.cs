@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using NUnit.Framework;
 using Unity.Collections;
 using Unity.Jobs;
-using Unity.Mathematics;
 using Unity.Properties.Serialization;
 using UnityEngine;
-using Unity.Properties;
-using UnityEngine.Profiling;
-using Debug = UnityEngine.Debug;
-using Unity.Entities.Properties.Tests;
 using Unity.PerformanceTesting;
 
 namespace Unity.Entities.Properties.Tests
@@ -80,7 +73,7 @@ namespace Unity.Entities.Properties.Tests
                 // @NOTE This json string will also be used to debug the size for a single entity
                 var container = new EntityContainer(m_Manager, entities[0]);
 
-                var json = JsonSerializer.Serialize(ref container);
+                JsonSerializer.Serialize(ref container);
 
                 Measure.Method(() =>
                 {
@@ -128,7 +121,9 @@ namespace Unity.Entities.Properties.Tests
             public NativeArray<Entity> Entities;
             public int StartIndex;
             public int EndIndex;
+#pragma warning disable 649
             public string Output;
+#pragma warning restore 649
         }
 
         /// <summary>
@@ -246,7 +241,7 @@ namespace Unity.Entities.Properties.Tests
 
                 var container = new EntityContainer(m_Manager, entities[0]);
 
-                var json = JsonSerializer.Serialize(ref container);
+                JsonSerializer.Serialize(ref container);
 
                 var job = new SerializationJob
                 {

@@ -17,9 +17,12 @@ namespace Systems
     [UpdateAfter(typeof(ShipArrivalSystem))]
     public class ShipMovementSystem : JobComponentSystem
     {
+#pragma warning disable 649
         struct Ships
         {
+
             public readonly int Length;
+
             public ComponentDataArray<Position> Positions;
             public ComponentDataArray<Rotation> Rotations;
             public ComponentDataArray<ShipData> Data;
@@ -31,7 +34,7 @@ namespace Systems
             public readonly int Length;
             public ComponentDataArray<PlanetData> Data;
         }
-
+#pragma warning restore 649
         [BurstCompile]
         struct CalculatePositionsJob : IJobParallelFor
         {
@@ -74,7 +77,7 @@ namespace Systems
                 }
 
                 var shipCurrentDirection = math.normalize((float3)newPos - position.Value);
-                rotation.Value = quaternion.lookRotation(shipCurrentDirection, math.up());
+                rotation.Value = quaternion.LookRotation(shipCurrentDirection, math.up());
 
                 position.Value = newPos;
                 Positions[index] = position;
@@ -97,16 +100,19 @@ namespace Systems
             }
         }
 
+#pragma warning disable 649
         [Inject]
         EndFrameBarrier m_EndFrameBarrier;
+
         [Inject]
         Ships m_Ships;
         [Inject]
         Planets m_Planets;
+#pragma warning restore 649
 
         NativeQueue<Entity> m_ShipArrivedQueue;
 
-        protected override void OnCreateManager(int capacity)
+        protected override void OnCreateManager()
         {
             m_ShipArrivedQueue = new NativeQueue<Entity>(Allocator.Persistent);
         }
@@ -131,7 +137,7 @@ namespace Systems
                 Entities = m_Ships.Entities,
                 Positions = m_Ships.Positions,
                 Rotations = m_Ships.Rotations,
-                ShipArrivedQueue = m_ShipArrivedQueue
+                ShipArrivedQueue = m_ShipArrivedQueue.ToConcurrent()
             }.Schedule(m_Ships.Length, 32, inputDeps);
 
             handle = new ShipArrivedTagJob

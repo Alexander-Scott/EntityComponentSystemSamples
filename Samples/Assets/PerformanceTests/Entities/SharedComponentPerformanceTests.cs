@@ -1,7 +1,5 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Unity.Collections;
-using UnityEngine;
 using Unity.PerformanceTesting;
 
 namespace Unity.Entities.PerformanceTests
@@ -52,7 +50,9 @@ namespace Unity.Entities.PerformanceTests
 
         struct TestData2 : IComponentData
         {
+#pragma warning disable 649
             public int value;
+#pragma warning restore 649
         }
 
 

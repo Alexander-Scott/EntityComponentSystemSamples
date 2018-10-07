@@ -1,7 +1,6 @@
 ﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
-using Unity.Burst;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
@@ -11,6 +10,7 @@ namespace TwoStickPureExample
     [UpdateBefore(typeof(MoveForwardSystem))]
     class EnemyShootSystem : JobComponentSystem
     {
+#pragma warning disable 649
         public struct PlayerData
         {
             public readonly int Length;
@@ -20,6 +20,7 @@ namespace TwoStickPureExample
 
         [Inject] private PlayerData m_Player;
         [Inject] private ShotSpawnBarrier m_ShotSpawnBarrier;
+#pragma warning restore 649
 
         // [BurstCompile]
         // This cannot currently be burst compiled because CommandBuffer.SetComponent() accesses a static field.
@@ -47,7 +48,7 @@ namespace TwoStickPureExample
                     spawn.Position = position;
                     spawn.Rotation = new Rotation
                     {
-                        Value = quaternion.lookRotation(math.normalize(PlayerPos - position.Value), math.up())
+                        Value = quaternion.LookRotation(math.normalize(PlayerPos - position.Value), math.up())
                     };
                     spawn.Faction = Factions.kEnemy;
 
@@ -61,7 +62,7 @@ namespace TwoStickPureExample
         {
             if (m_Player.Length == 0)
                 return inputDeps;
-            
+
             return new SpawnEnemyShots
             {
                 PlayerPos = m_Player.Position[0].Value,
